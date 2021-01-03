@@ -1,6 +1,8 @@
 class ProfileImageUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
+  
+  # MiniMagickを使えるようにしています。
   include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
@@ -35,6 +37,8 @@ class ProfileImageUploader < CarrierWave::Uploader::Base
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
+
+  # アップロードできる拡張子を制限しています
   def extension_whitelist
     %w(jpg jpeg gif png)
   end
