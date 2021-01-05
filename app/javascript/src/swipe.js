@@ -50,6 +50,9 @@ if(location.pathname == "/users") {
         let keep = Math.abs(event.deltaX) < 200
         event.target.classList.toggle('removed', !keep);
 
+        // event.deltaX > 0がtureなら"like"、falseなら"dislike"をreactionに代入しています。
+        let reaction = event.deltaX > 0 ? "like" : "dislike";
+
         if (keep) {
           event.target.style.transform = '';
         } else {
@@ -61,12 +64,34 @@ if(location.pathname == "/users") {
           let yMulti = event.deltaY / 80;
           let rotate = xMulti * yMulti;
 
+          // 引数には、「誰をスワイプしたのかユーザーのid(カードのid)」と「リアクションの情報」を渡しています。
+          postReaction(el.id, reaction);
+
           event.target.style.transform = 'translate(' + toX + 'px, ' + (toY + event.deltaY) + 'px) rotate(' + rotate + 'deg)';
 
           initCards();
         }
       });
     });
+
+    function postReaction(user_id, reaction) {
+      // $.ajax({})で非同期通信を開始
+      // urlにはリクエストを送信する先のURLを指定する。
+      // typeにはHTTP通信の種類を指定。今回の場合はリアクションの情報を送りたいのでPOST
+      // dataには送信したい情報を記載。今回は誰をスワイプしたかのユーザーidのuser_idとリアクション(like,dislike)の値をreactionとして送る。
+      $.ajax({
+        url: "reactions.json",
+        type: "POST",
+        datatype: "json",
+        data: {
+          user_id: user_id,
+          reaction: reaction,
+        }
+      })
+      .done(function(){
+        console.log("done")
+      })
+    }
 
     function createButtonListener(reaction) {
       let cards = document.querySelectorAll('.swipe--card:not(.removed)');
@@ -76,6 +101,11 @@ if(location.pathname == "/users") {
       let moveOutWidth = document.body.clientWidth * 2;
 
       let card = cards[0];
+
+      let user_id = card.id;
+
+      postReaction(user_id, reaction);
+
       card.classList.add('removed');
 
       if (reaction == "like") {
