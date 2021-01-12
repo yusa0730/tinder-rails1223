@@ -10,10 +10,14 @@ const appChatRoom = consumer.subscriptions.create("ChatRoomChannel", {
   },
 
   received(data) {
-    return alert(data['chat_message']);
+    // document.getElementById('chat-messages');でid="chat-messages"の要素のオブジェクトを返します。
+    const chatMessages = document.getElementById('chat-messages');
+    // insertAdjacentHTML で第2引数のdata['chat_message']を挿入します。
+    // 挿入位置は、'beforeend'なので、element 内部の、最後の子要素の後に挿入します。
+    chatMessages.insertAdjacentHTML('beforeend', data['chat_message']);
   },
 
-  // chat_room_idをchat_room_channel.rb の speak アクションに送っています。
+  // chat_messageとchat_room_idをchat_room_channel.rb の speak アクションに送っています。
   speak: function(chat_message, chat_room_id) {
     return this.perform('speak', { chat_message: chat_message, chat_room_id: chat_room_id});
   }
